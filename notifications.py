@@ -57,32 +57,32 @@ if __name__ == '__main__':
         if today.new_case == 0 or yesterday.new_case == 0:
             notification.append(f"New Cases: {today.new_case: >15} (N/A)")
         else:
-            notification.append(f"New Cases: {today.new_case: >15} ({((today.new_case / yesterday.new_case) - 1) * 100:+.3}%)")
+            notification.append(f"New Cases: {today.new_case: >15} ({((today.new_case / yesterday.new_case) - 1):+3.0%})")
 
         if today.total_active == 0 or yesterday.total_active == 0:
             notification.append(f"Total Active: {today.total_active: >12} (N/A)")
         else:
-            notification.append(f"Total Active: {today.total_active: >12} ({((today.total_active / yesterday.total_active) - 1) * 100:+.3}%)")
+            notification.append(f"Total Active: {today.total_active: >12} ({((today.total_active / yesterday.total_active) - 1):+3.0%})")
 
         if today.hospitalization_count == 0 or yesterday.hospitalization_count == 0:
             notification.append(f"Hospitalized: {today.hospitalization_count: >12} (N/A)")
         else:
-            notification.append(f"Hospitalized: {today.hospitalization_count: >12} ({((today.hospitalization_count / yesterday.hospitalization_count) - 1) * 100:+.3}%)")
+            notification.append(f"Hospitalized: {today.hospitalization_count: >12} ({((today.hospitalization_count / yesterday.hospitalization_count) - 1):+3.0%})")
 
         if today.total == 0 or yesterday.total == 0:
             notification.append(f"Total Cases: {today.total: >13} (N/A)")
         else:
-            notification.append(f"Total Cases: {today.total: >13} ({((today.total / yesterday.total) - 1) * 100:+.3}%)")
+            notification.append(f"Total Cases: {today.total: >13} ({((today.total / yesterday.total) - 1):+3.0%})")
 
         if today.total_recovered == 0 or yesterday.total_recovered == 0:
             notification.append(f"Total Recovered: {today.total_recovered: >9} (N/A)")
         else:
-            notification.append(f"Total Recovered: {today.total_recovered: >9} ({((today.total_recovered / yesterday.total_recovered) - 1) * 100:+.3}%)")
+            notification.append(f"Total Recovered: {today.total_recovered: >9} ({((today.total_recovered / yesterday.total_recovered) - 1):+3.0%})")
 
         if today.total_deaths == 0 or yesterday.total_deaths == 0:
             notification.append(f"Total Deaths: {today.total_deaths: >12} (N/A)")
         else:
-            notification.append(f"Total Deaths: {today.total_deaths: >12} ({((today.total_deaths / yesterday.total_deaths) - 1) * 100:+.3}%)")
+            notification.append(f"Total Deaths: {today.total_deaths: >12} ({((today.total_deaths / yesterday.total_deaths) - 1):+3.0%})")
 
         if DEBUG:
             print('\n'.join(notification))
@@ -98,32 +98,32 @@ if __name__ == '__main__':
         if today.new_case == 0 or yesterday.new_case == 0:
             notification.append(f"New Cases: {today.new_case: >15} (N/A)")
         else:
-            notification.append(f"New Cases: {today.new_case: >15} ({((today.new_case / yesterday.new_case) - 1) * 100:+.3}%)")
+            notification.append(f"New Cases: {today.new_case: >15} ({((today.new_case / yesterday.new_case) - 1):+3.0%})")
 
         if today.total_active == 0 or yesterday.total_active == 0:
             notification.append(f"Total Active: {today.total_active: >12} (N/A)")
         else:
-            notification.append(f"Total Active: {today.total_active: >12} ({((today.total_active / yesterday.total_active) - 1) * 100:+.3}%)")
+            notification.append(f"Total Active: {today.total_active: >12} ({((today.total_active / yesterday.total_active) - 1):+3.0%})")
 
         if today.hospitalization_count == 0 or yesterday.hospitalization_count == 0:
             notification.append(f"Hospitalized: {today.hospitalization_count: >12} (N/A)")
         else:
-            notification.append(f"Hospitalized: {today.hospitalization_count: >12} ({((today.hospitalization_count / yesterday.hospitalization_count) - 1) * 100:+.3}%)")
+            notification.append(f"Hospitalized: {today.hospitalization_count: >12} ({((today.hospitalization_count / yesterday.hospitalization_count) - 1):+3.0%})")
 
         if today.total == 0 or yesterday.total == 0:
             notification.append(f"Total Cases: {today.total: >13} (N/A)")
         else:
-            notification.append(f"Total Cases: {today.total: >13} ({((today.total / yesterday.total) - 1) * 100:+.3}%)")
+            notification.append(f"Total Cases: {today.total: >13} ({((today.total / yesterday.total) - 1):+3.0%})")
 
         if today.total_recovered == 0 or yesterday.total_recovered == 0:
             notification.append(f"Total Recovered: {today.total_recovered: >9} (N/A)")
         else:
-            notification.append(f"Total Recovered: {today.total_recovered: >9} ({((today.total_recovered / yesterday.total_recovered) - 1) * 100:+.3}%)")
+            notification.append(f"Total Recovered: {today.total_recovered: >9} ({((today.total_recovered / yesterday.total_recovered) - 1):+3.0%})")
 
         if today.total_deaths == 0 or yesterday.total_deaths == 0:
             notification.append(f"Total Deaths: {today.total_deaths: >12} (N/A)")
         else:
-            notification.append(f"Total Deaths: {today.total_deaths: >12} ({((today.total_deaths / yesterday.total_deaths) - 1) * 100:+.3}%)")
+            notification.append(f"Total Deaths: {today.total_deaths: >12} ({((today.total_deaths / yesterday.total_deaths) - 1):+3.0%})")
 
         if DEBUG:
             print('\n'.join(notification))
