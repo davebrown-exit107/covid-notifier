@@ -3,3 +3,4 @@ __pycache__
 *.sqlite
 sensitive.py
 sample_data
+db_backups

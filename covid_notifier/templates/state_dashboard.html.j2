@@ -1,0 +1,25 @@
+<html>
+    <head>
+        <title>State Dashboard</title>
+    </head>
+    <body>
+        <h1>Regions</h1>
+        <table>
+            <thead>
+                <th>Name</th>
+                <th>Abbr</th>
+                <th>Entry Count</th>
+            </thead>
+            <tbody>
+            {% for region in regions %}
+                <td><a href="{{ url_for('region_dashboard', region_id=region.id) }}">{{ region.name_label }}</a></td>
+                <td>{{ region.name_abbr }}</td>
+                <td>{{ region.entries | length }}</td>
+            {% else %}
+                <td colspan=4>No Regions available</td>
+            {% endfor %}
+            </tbody>
+        </table>
+    </body>
+</html>
+
