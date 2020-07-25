@@ -22,20 +22,20 @@ from covid_notifier.models import Region, Entry
 
 
 # User registration
-@notifier_app.route('/register/<pn>')
+@notifier_app.route('/register/<pn>/', methods=['POST'])
 def register_user(pn):
     pass
 
-@notifier_app.route('/unregister/<pn>')
+@notifier_app.route('/unregister/<pn>/', methods=['POST'])
 def unregister_user(pn):
     pass
 
-@notifier_app.route('/update/<pn>')
+@notifier_app.route('/update/<pn>/', methods=['POST'])
 def send_update(pn):
     pass
 
 # User configuration
-@notifier_app.route('/config/<pn>')
+@notifier_app.route('/config/<pn>/', methods=['POST'])
 def user_config(pn):
     pass
 
