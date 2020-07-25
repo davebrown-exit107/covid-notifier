@@ -30,35 +30,42 @@ def incoming_sms():
     message = dict(request.form)
     body = message['Body']
 
+    # Figure out what command the user wants to run
     command = body.split(' ')[0]
+
+    # Route to the appropriate SMS handler based on the command
     if command.lower() in sms_dispatcher:
         response = sms_dispatcher[command.lower()](message)
     else:
         response = MessagingResponse()
-        response.message("I don't recognize that command. Send 'help' if you need assistance.")
+        response.message("I don't recognize that command. Send 'commands' if you need assistance.")
 
     return str(response)
 
-# Admin
 @notifier_app.route('/user_dashboard/<pn>/', methods=['GET'])
 def user_dashboard(pn):
+    '''Show the user their dashboard.'''
+    #TODO: this could be the config endpoint if we wanted...
     subscriber = Subscriber.query.filter_by(phone_number=pn).one_or_none()
     if subscriber:
         return render_template('user_dashboard.html.j2', subscriber=subscriber)
 
 @notifier_app.route('/state_dashboard/', methods=['GET'])
 def state_dashboard():
+    '''Display a statewide dashboard.'''
     regions = Region.query.all()
     return render_template('state_dashboard.html.j2', regions=regions)
 
 @notifier_app.route('/region/<region_id>/dashboard/', methods=['GET'])
 def region_dashboard(region_id):
+    '''Show an individual region's dashboard.'''
     region = Region.query.get(region_id)
     return render_template('region_dashboard.html.j2', region=region)
 
 @notifier_app.route('/pull_new_data/')
 def pull_new_data():
-    # Fill in the params from the above constants
+    '''Pull new data from the state.'''
+    #TODO: How do we know when the data is new and when it was updated?
     query_options = [
         "f={}".format(quote(notifier_app.config['RET_FORMAT'])),
         "&where={}".format(quote(notifier_app.config['WHERE_QUERY'])),
