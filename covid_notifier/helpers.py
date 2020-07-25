@@ -5,24 +5,23 @@ from twilio.rest import Client
 import requests
 
 from covid_notifier.models import Region, Entry
-from covid_notifier.app import db
+from covid_notifier.app import db, notifier_app
 
-def send_message_twilio(message, phone_numbers, auth):
+def send_message_twilio(message, phone_number):
     '''Send a notification via twilio.'''
 
     # Build the Twilio client
-    client = Client(auth['TWILIO_ACCOUNT_SID'], auth['TWILIO_AUTH_TOKEN'])
+    client = Client(notifier_app.config['TWILIO_ACCOUNT_SID'], notifier_app.config['TWILIO_AUTH_TOKEN'])
     #max_title_len = max(entry[0] in stats)
     #print(max_title_len)
     #message = [f"{title}: {stat}" for (title,stat) in stats]
 
     # Build a message per county. Stolen from the first todo on Twilio's site.
-    for phone_number in phone_numbers:
-        client.messages.create(
-            body='\n'.join(message),
-            messaging_service_sid=auth['TWILIO_MESSAGING_SERVICE'],
-            to=phone_number
-            )
+    client.messages.create(
+        body='\n'.join(message),
+        messaging_service_sid=notifier_app.config['TWILIO_MESSAGING_SERVICE'],
+        to=phone_number
+        )
 
 
 def send_message_pushover(stats, title, auth):
