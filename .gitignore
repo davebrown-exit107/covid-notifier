@@ -1,6 +1,5 @@
 __pycache__
 *.env
 *.sqlite
-sensitive.py
 sample_data
 db_backups
