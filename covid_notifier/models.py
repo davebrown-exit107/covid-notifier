@@ -6,6 +6,19 @@
 
 from covid_notifier.app import db
 
+class Subscriber(db.Model):
+    '''Phone number subscribed to an update of some sort.'''
+    __tablename__ = 'subscribers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    phone_number = db.Column(db.String)
+
+    regions = db.relationship('Region', backref=db.backref('subscribers', lazy=True))
+
+    def __init__(self, phone_number):
+        self.phone_number = phone_number
+
+
 class Region(db.Model):
     '''Region where entries can be assigned.
     Generally this is a county but there is one
@@ -83,3 +96,9 @@ class Entry(db.Model):
     def __init__(self, region, date):
         self.region = region
         self.date = date
+
+subscriptions = db.Table('subscriptions',
+                db.Column('subscriber_id', db.Integer, db.ForeignKey('subscribers.id'), primary_key=True),
+                db.Column('region_id', db.Integer, db.ForeignKey('regions.id'), primary_key=True)
+                )
+
