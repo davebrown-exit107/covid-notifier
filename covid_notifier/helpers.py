@@ -17,11 +17,13 @@ def send_message_twilio(message, phone_number):
     #message = [f"{title}: {stat}" for (title,stat) in stats]
 
     # Build a message per county. Stolen from the first todo on Twilio's site.
-    client.messages.create(
+    message = client.messages.create(
         body='\n'.join(message),
         messaging_service_sid=notifier_app.config['TWILIO_MESSAGING_SERVICE'],
         to=phone_number
         )
+
+    return message
 
 
 def send_message_pushover(stats, title, auth):
