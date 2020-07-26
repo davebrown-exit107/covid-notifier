@@ -1,28 +1,49 @@
-#!/usr/bin/env python
-'''Utility that pulls down statewide Coronavirus results and alerts you to your county's numbers.'''
-from datetime import date
-from urllib.parse import quote
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
+'''Help poor developers from having to repeat themselves...'''
 
+##########################################
+# 3rd parth imports
+###########################################
+from twilio.rest import Client
 import requests
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy_utils import database_exists, create_database
 
-from db import engine, Base
-from db import Region, Entry
+##########################################
+# Application component imports
+###########################################
+from covid_notifier.models import Region, Entry
+from covid_notifier.app import db, notifier_app
 
-def validate_db(engine):
-    if not database_exists(engine.url):
-        create_database(engine.url)
-    Base.metadata.create_all(bind=engine)
+def send_message_twilio(message, phone_number):
+    '''Send a notification via twilio.'''
+    # Build the Twilio client
+    client = Client(
+        notifier_app.config['TWILIO_ACCOUNT_SID'],
+        notifier_app.config['TWILIO_AUTH_TOKEN'])
 
-def process_results(results, update_date):
+    # Build a message per county. Stolen from the first todo on Twilio's site.
+    message = client.messages.create(
+        body='\n'.join(message),
+        messaging_service_sid=notifier_app.config['TWILIO_MESSAGING_SERVICE'],
+        to=phone_number
+        )
+
+    return message
+
+
+def send_message_pushover(message, title, auth):
+    '''Send a message via Pushover.io'''
+    # Pushover message sender
+    requests.post("https://api.pushover.net/1/messages.json", data={
+        "token": auth['PUSHOVER_API_TOKEN'],
+        "user": auth['PUSHOVER_USER_KEY'],
+        "message": '\n'.join(message),
+        "title": f"COVID Update: {title} county"
+        })
+
+
+def insert_results(results, update_date):
     '''Process the json return from a query to the ArcGIS database.'''
-    # Make sure the database is in order
-    validate_db(engine)
-
-    # Build our connection to the database
-    Session = sessionmaker(bind=engine)
-    session = Session()
 
     #######################################
     # Statewide Statistics
@@ -30,9 +51,14 @@ def process_results(results, update_date):
     # Store statewide statistics
 
     # Make sure that the statewide region exists
-    state = session.query(Region).filter_by(name='MONTANA').one_or_none()
+    state = db.session.query(Region).filter_by(name='MONTANA').one_or_none()
     if not state:
-        state = Region(name='MONTANA', name_label='Montana', name_abbr='MT', county_number='9999', fips='None') 
+        state = Region(
+            name='MONTANA',
+            name_label='Montana',
+            name_abbr='MT',
+            county_number='9999',
+            fips='None')
 
     state_entry = Entry(region=state, date=update_date)
 
@@ -76,16 +102,16 @@ def process_results(results, update_date):
     state_entry.total_active = sum(entry['attributes']['TotalActive'] for entry in results['features'])
     state_entry.total = sum(entry['attributes']['Total'] for entry in results['features'])
 
-    session.add(state_entry)
-    session.commit()
-    
+    db.session.add(state_entry)
+    db.session.commit()
+
 
     #######################################
     # County Statistics
     #######################################
     # Store county-level statistics
     for entry in results['features']:
-        region = session.query(Region).filter_by(name=entry['attributes']['NAME']).one_or_none()
+        region = db.session.query(Region).filter_by(name=entry['attributes']['NAME']).one_or_none()
         if not region:
             region = Region(
                 name=entry['attributes']['NAME'],
@@ -140,37 +166,5 @@ def process_results(results, update_date):
         db_entry.total = entry['attributes']['Total']
 
         # Add it to the session and commit
-        session.add(db_entry)
-        session.commit()
-
-if __name__ == '__main__':
-    # Setup some constants for our query
-    BASE_URL = 'https://services.arcgis.com/qnjIrwR8z5Izc0ij/ArcGIS/rest/services/COVID_Cases_Production_View/FeatureServer/0/query?'
-    RET_FORMAT = 'json'
-    WHERE_QUERY = 'Total <> 0'
-    RETURN_GEOMETRY = 'false'
-    SPATIAL_REL = 'esriSpatialRelIntersects'
-    OUT_FIELDS = 'orderByFields=NewCases desc,NAMELABEL asc&outSR=102100'
-    RESULT_OFFSET = '0'
-    RESULT_RECORD_COUNT = '56'
-    RESULT_TYPE = 'standard'
-    CACHE_HINT = 'true'
-
-    # Fill in the params from the above constants
-    query_options = [
-        "f={}".format(quote(RET_FORMAT)),
-        "&where={}".format(quote(WHERE_QUERY)),
-        "&returnGeometry={}".format(quote(RETURN_GEOMETRY)),
-        "&spatialRel={}".format(quote(SPATIAL_REL)),
-        "&outFields=*&{}".format(quote(OUT_FIELDS)),
-        "&resultOffset={}".format(quote(RESULT_OFFSET)),
-        "&resultRecordCount={}".format(quote(RESULT_RECORD_COUNT)),
-        "&resultType={}".format(quote(RESULT_TYPE)),
-        "&cacheHint={}".format(quote(CACHE_HINT))
-        ]
-
-    FULL_URL = ''.join([BASE_URL, ''.join(query_options)])
-
-    # Run the query
-    results = requests.get(FULL_URL).json()
-    process_results(results, date.today())
+        db.session.add(db_entry)
+        db.session.commit()

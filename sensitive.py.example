@@ -1,8 +1,0 @@
-# Who's getting updates?
-phone_numbers = ['+12125555555']
-
-# Which counties do you want to monitor?
-counties_monitored = ['GALLATIN', 'YELLOWSTONE', 'MISSOULA']
-
-# Do you also want statewide numbers?
-statewide = True

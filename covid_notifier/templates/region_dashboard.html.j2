@@ -1,0 +1,17 @@
+<html>
+    <head>
+        <title>{{ region.name_label }} Dashboard</title>
+    </head>
+    <body>
+        <h1>Entries</h1>
+        <ul>
+        {% for entry in region.entries %}
+            <li>{{ entry.date }}</li>
+        {% else %}
+            <li>No Entries</li>
+        {% endfor %}
+        </ul>
+    </body>
+</html>
+
+
