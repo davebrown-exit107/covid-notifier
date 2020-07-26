@@ -82,7 +82,7 @@ def user_dashboard(message):
     '''Send the subscriber a link to advanced configuration page.'''
     subscriber = Subscriber.query.filter_by(phone_number=message['From']).one_or_none()
     if subscriber:
-        message = ['Your configuration link:']
+        message = ['Your dashboard link:']
 
         serializer = URLSafeTimedSerializer(notifier_app.config['SECRET_KEY'])
         token = serializer.dumps(subscriber.phone_number)
@@ -126,9 +126,8 @@ def add_subscription(message):
 def request_update(message):
     '''Send the subscriber an update for all of their subscribed regions.'''
     subscriber = Subscriber.query.filter_by(phone_number=message['From']).one_or_none()
-    if subscriber and len(subscriber.regions) >= 1:
+    if subscriber and len(subscriber.regions) > 0:
         response = MessagingResponse()
-        messages = []
         for region in subscriber.regions:
             today = region.entries[-1]
             yesterday = region.entries[-2]
@@ -136,7 +135,9 @@ def request_update(message):
                 message = [f"{region.name_label}"]
             else:
                 message = [f"{region.name_label + ' County'}"]
-            # There's probably a much better way of handling DIVBYZERO errors but this is what I have right now
+
+            # There's probably a much better way of handling
+            # DIVBYZERO errors but this is what I have right now
             if today.new_case == 0 or yesterday.new_case == 0:
                 message.append(f"New Cases: {today.new_case: >15} (N/A)")
             else:
@@ -167,7 +168,7 @@ def request_update(message):
             else:
                 message.append(f"Total Deaths: {today.total_deaths: >12} ({((today.total_deaths / yesterday.total_deaths) - 1):+3.0%})")
 
-            response.append(response.message('\n'.join(message)))
+            response.message('\n'.join(message))
         return response
     return 'Subscriber or regions not found'
 
