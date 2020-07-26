@@ -8,7 +8,7 @@
 ###########################################
 from datetime import date
 from flask import request, render_template, redirect, url_for, flash, abort
-from itsdangerous.exc import SignatureExpired
+from itsdangerous.exc import BadSignature, SignatureExpired
 from itsdangerous.url_safe import URLSafeTimedSerializer
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
@@ -52,6 +52,8 @@ def user_dashboard(token=None):
         serializer = URLSafeTimedSerializer(notifier_app.config['SECRET_KEY'])
         try:
             phone_number = serializer.loads(token, max_age=300)
+        except BadSignature:
+            return abort(404)
         except SignatureExpired:
             return abort(404)
         subscriber = Subscriber.query.filter_by(phone_number=phone_number).one_or_none()
