@@ -1,16 +1,25 @@
-#!/usr/bin/env python
+# pylint: disable=line-too-long
+# pylint: disable=too-many-statements
 '''Help poor developers from having to repeat themselves...'''
 
+##########################################
+# 3rd parth imports
+###########################################
 from twilio.rest import Client
 import requests
 
+##########################################
+# Application component imports
+###########################################
 from covid_notifier.models import Region, Entry
 from covid_notifier.app import db, notifier_app
 
 def send_message_twilio(message, phone_number):
     '''Send a notification via twilio.'''
     # Build the Twilio client
-    client = Client(notifier_app.config['TWILIO_ACCOUNT_SID'], notifier_app.config['TWILIO_AUTH_TOKEN'])
+    client = Client(
+        notifier_app.config['TWILIO_ACCOUNT_SID'],
+        notifier_app.config['TWILIO_AUTH_TOKEN'])
 
     # Build a message per county. Stolen from the first todo on Twilio's site.
     message = client.messages.create(
@@ -22,10 +31,8 @@ def send_message_twilio(message, phone_number):
     return message
 
 
-def send_message_pushover(stats, title, auth):
+def send_message_pushover(message, title, auth):
     '''Send a message via Pushover.io'''
-    message = [f"{title}: {stat}" for (title,stat) in stats]
-
     # Pushover message sender
     requests.post("https://api.pushover.net/1/messages.json", data={
         "token": auth['PUSHOVER_API_TOKEN'],
@@ -46,7 +53,12 @@ def insert_results(results, update_date):
     # Make sure that the statewide region exists
     state = db.session.query(Region).filter_by(name='MONTANA').one_or_none()
     if not state:
-        state = Region(name='MONTANA', name_label='Montana', name_abbr='MT', county_number='9999', fips='None') 
+        state = Region(
+            name='MONTANA',
+            name_label='Montana',
+            name_abbr='MT',
+            county_number='9999',
+            fips='None')
 
     state_entry = Entry(region=state, date=update_date)
 
@@ -92,7 +104,7 @@ def insert_results(results, update_date):
 
     db.session.add(state_entry)
     db.session.commit()
-    
+
 
     #######################################
     # County Statistics

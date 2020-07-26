@@ -1,15 +1,16 @@
 '''Handles the database definitions'''
 # pylint: disable=no-member
-# pylint: disable=missing-function-docstring
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
+# pylint: disable=line-too-long
+# pylint: disable=too-few-public-methods
 
+##########################################
+# Application component imports
+###########################################
 from covid_notifier.app import db
 
 subscriptions = db.Table('subscriptions',
-                db.Column('subscriber_id', db.Integer, db.ForeignKey('subscribers.id'), primary_key=True),
-                db.Column('region_id', db.Integer, db.ForeignKey('regions.id'), primary_key=True)
-                )
+                         db.Column('subscriber_id', db.Integer, db.ForeignKey('subscribers.id'), primary_key=True),
+                         db.Column('region_id', db.Integer, db.ForeignKey('regions.id'), primary_key=True))
 
 class Subscriber(db.Model):
     '''Phone number subscribed to an update of some sort.'''
@@ -101,4 +102,3 @@ class Entry(db.Model):
     def __init__(self, region, date):
         self.region = region
         self.date = date
-

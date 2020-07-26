@@ -1,10 +1,16 @@
-# pylint: disable=wrong-import-position
-# pylint: disable=missing-function-docstring
+# pylint: disable=line-too-long
 # pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
+# pylint: disable=unused-import
+# pylint: disable=wrong-import-position
 
+##########################################
+# Stdlib imports
+###########################################
 import os
 
+##########################################
+# 3rd party imports
+###########################################
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate

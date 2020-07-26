@@ -1,31 +1,30 @@
-# pylint: disable=no-member
-# pylint: disable=missing-function-docstring
-# pylint: disable=missing-module-docstring
-# pylint: disable=missing-class-docstring
+'''Routes for the flask application'''
 
 ##########################################
-# 3rd party modules
+# Stdlib imports
 ###########################################
 from datetime import date
+from urllib.parse import quote
+
+##########################################
+# 3rd party imports
+###########################################
 from flask import request, render_template, redirect, url_for, flash, abort
 from itsdangerous.exc import BadSignature, SignatureExpired
 from itsdangerous.url_safe import URLSafeTimedSerializer
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
-from urllib.parse import quote
 from werkzeug.urls import url_parse
 
+##########################################
+# Application component imports
 ###########################################
-# import application components
-############################################
-#from covid_notifier.app import db
 from covid_notifier.app import notifier_app
 from covid_notifier.helpers import insert_results
 from covid_notifier.models import Region, Subscriber
 from covid_notifier.sms_handlers import sms_dispatcher
 
 
-# Handle incoming SMS messages
 @notifier_app.route('/incoming/', methods=['POST'])
 def incoming_sms():
     '''Handle incoming SMS messages.'''
@@ -35,7 +34,7 @@ def incoming_sms():
     # Figure out what command the user wants to run
     command = body.split(' ')[0]
 
-    # Route to the appropriate SMS handler based on the command
+    # Route to the appropriate SMS handler based on the command name
     if command.lower() in sms_dispatcher:
         response = sms_dispatcher[command.lower()](message)
     else:
