@@ -7,20 +7,22 @@
 # 3rd party modules
 ###########################################
 from datetime import date
-from flask import request, render_template, redirect, url_for, flash
+from flask import request, render_template, redirect, url_for, flash, abort
+from itsdangerous.exc import SignatureExpired
+from itsdangerous.url_safe import URLSafeTimedSerializer
 import requests
+from twilio.twiml.messaging_response import MessagingResponse
 from urllib.parse import quote
 from werkzeug.urls import url_parse
-from twilio.twiml.messaging_response import MessagingResponse
 
 ###########################################
 # import application components
 ############################################
 #from covid_notifier.app import db
 from covid_notifier.app import notifier_app
-from covid_notifier.helpers import insert_results, send_message_twilio
-from covid_notifier.models import Region, Entry, Subscriber
-from covid_notifier.sms_handlers import sms_dispatcher 
+from covid_notifier.helpers import insert_results
+from covid_notifier.models import Region, Subscriber
+from covid_notifier.sms_handlers import sms_dispatcher
 
 
 # Handle incoming SMS messages
@@ -42,13 +44,25 @@ def incoming_sms():
 
     return str(response)
 
-@notifier_app.route('/user_dashboard/<pn>/', methods=['GET'])
-def user_dashboard(pn):
+@notifier_app.route('/user_dashboard/', methods=['GET'])
+@notifier_app.route('/user_dashboard/<token>/', methods=['GET'])
+def user_dashboard(token=None):
     '''Show the user their dashboard.'''
-    #TODO: this could be the config endpoint if we wanted...
-    subscriber = Subscriber.query.filter_by(phone_number=pn).one_or_none()
-    if subscriber:
-        return render_template('user_dashboard.html.j2', subscriber=subscriber)
+    if token:
+        serializer = URLSafeTimedSerializer(notifier_app.config['SECRET_KEY'])
+        try:
+            phone_number = serializer.loads(token, max_age=300)
+        except SignatureExpired:
+            return abort(404)
+        subscriber = Subscriber.query.filter_by(phone_number=phone_number).one_or_none()
+        if subscriber:
+            return render_template('user_dashboard.html.j2', subscriber=subscriber)
+# Fun debugging code. This will generate a token on a GET without a token
+# Just change PHONENUMBER to one in the database.
+#    message = sms_dispatcher['dashboard']({'From': 'PHONENUMBER'})
+#    return str(message)
+    return abort(404)
+
 
 @notifier_app.route('/state_dashboard/', methods=['GET'])
 def state_dashboard():

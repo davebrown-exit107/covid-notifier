@@ -1,7 +1,9 @@
 '''Handlers for the various SMS command messages'''
+from flask import url_for
+from itsdangerous.url_safe import URLSafeTimedSerializer
 from twilio.twiml.messaging_response import MessagingResponse
 
-from covid_notifier.app import db
+from covid_notifier.app import db, notifier_app
 from covid_notifier.models import Region, Entry, Subscriber
 from covid_notifier.helpers import send_message_twilio
 
@@ -15,9 +17,9 @@ unregister:  Unregister your phone number for updates
 
 # Helper commands
 commands:  Display this message
-subscriptions:  List subscribed regions for this phone number
+dashboard:  Send a time sensitive link to the subscriber's dashboard
 regions:  List available regions for subscription
-config:  Advanced user configuration
+subscriptions:  List subscribed regions for this phone number
 update:  Request an update on all regions you are subscribed to
 
 # Modify subscriptions
@@ -67,9 +69,19 @@ def list_subscriptions(message):
         response.message('\n'.join(message))
         return response
 
-def user_config(message):
+def user_dashboard(message):
     '''Send the subscriber a link to advanced configuration page.'''
-    pass
+    subscriber = Subscriber.query.filter_by(phone_number=message['From']).one_or_none()
+    if subscriber:
+        message = ['Your configuration link:']
+
+        serializer = URLSafeTimedSerializer(notifier_app.config['SECRET_KEY'])
+        token = serializer.dumps(subscriber.phone_number)
+        message.append(url_for('user_dashboard', _external=True, token=token))
+
+        response = MessagingResponse()
+        response.message('\n'.join(message))
+        return response
 
 def remove_subscription(message):
     '''Region a region from a subscriber's subscriptions.'''
@@ -151,9 +163,9 @@ sms_dispatcher = {
         'unregister': unregister_user,
         # Helper commands
         'commands': user_help,
-        'subscriptions': list_subscriptions,
+        'dashboard': user_dashboard,
         'regions': list_regions,
-        'config': user_config,
+        'subscriptions': list_subscriptions,
         'update': request_update,
         # Modify subscriptions
         'add': add_subscription,
