@@ -65,6 +65,7 @@ def user_dashboard(token=None):
     return abort(404)
 
 
+@notifier_app.route('/', methods=['GET'])
 @notifier_app.route('/state_dashboard/', methods=['GET'])
 def state_dashboard():
     '''Display a statewide dashboard.'''

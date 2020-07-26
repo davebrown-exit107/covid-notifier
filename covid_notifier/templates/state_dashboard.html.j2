@@ -7,18 +7,30 @@
         <table>
             <thead>
                 <th>Name</th>
-                <th>Abbr</th>
-                <th>Entry Count</th>
+                <th>New Cases</th>
+                <th>Total Active</th>
+                <th>Hospitalized</th>
+                <th>Total Cases</th>
+                <th>Total Recovered</th>
+                <th>Total Deaths</th>
             </thead>
             <tbody>
             {% for region in regions %}
                 <tr>
-                    <td><a href="{{ url_for('region_dashboard', region_id=region.id) }}">{{ region.name_label }}</a></td>
-                    <td>{{ region.name_abbr }}</td>
-                    <td>{{ region.entries | length }}</td>
+                    {% if region.name_abbr == 'MT' %}
+                        <td><a href="{{ url_for('region_dashboard', region_id=region.id) }}">{{ region.name_label }}</a></td>
+                    {% else %}
+                        <td><a href="{{ url_for('region_dashboard', region_id=region.id) }}">{{ region.name_label }} County</a></td>
+                    {% endif %}
+                    <td>{{ region.entries[-1].new_case }}</td>
+                    <td>{{ region.entries[-1].total_active }}</td>
+                    <td>{{ region.entries[-1].hospitalization_count }}</td>
+                    <td>{{ region.entries[-1].total }}</td>
+                    <td>{{ region.entries[-1].total_recovered }}</td>
+                    <td>{{ region.entries[-1].total_deaths }}</td>
                 </tr>
             {% else %}
-                <tr><td colspan=4>No Regions available</td></tr>
+                <tr><td colspan=4>No regions found</td></tr>
             {% endfor %}
             </tbody>
         </table>
