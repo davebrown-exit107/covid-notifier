@@ -3,7 +3,7 @@
 ##########################################
 # Stdlib imports
 ###########################################
-from datetime import date
+from datetime import datetime
 from urllib.parse import quote
 
 ##########################################
@@ -82,6 +82,7 @@ def region_dashboard(region_id):
 def pull_new_data():
     '''Pull new data from the state.'''
     if newer_data_available():
+        print('Pulling new data')
         base_url = 'https://services.arcgis.com/qnjIrwR8z5Izc0ij/ArcGIS/rest/services/COVID_Cases_Production_View/FeatureServer/0/query?'
         ret_format = 'json'
         where_query = 'Total <> 0'
@@ -93,7 +94,6 @@ def pull_new_data():
         result_type = 'standard'
         cache_hint = 'true'
 
-        #TODO: How do we know when the data is new and when it was updated?
         query_options = [
             "f={}".format(quote(ret_format)),
             "&where={}".format(quote(where_query)),
@@ -111,9 +111,13 @@ def pull_new_data():
         # Run the query
         results = requests.get(full_url).json()
 
-        # Insert the results into the database
-        insert_results(results, date.today())
+        # Find the date on the database
+        url = 'https://services.arcgis.com/qnjIrwR8z5Izc0ij/arcgis/rest/services/COVID_Cases_Production_View/FeatureServer/1/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=ScriptRunDate%20desc&resultOffset=0&resultRecordCount=1&resultType=standard&cacheHint=true'
+        date_result = requests.get(url).json()
+        current = datetime.fromtimestamp(date_result['features'][0]['attributes']['ScriptRunDate'] / 1000).date()
 
-        # Redirect to the statewide dashboard
-        return redirect(url_for('state_dashboard'))
-    abort(404)
+        # Insert the results into the database
+        insert_results(results, current)
+
+    # Redirect to the statewide dashboard
+    return redirect(url_for('state_dashboard'))
