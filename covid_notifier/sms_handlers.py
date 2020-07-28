@@ -12,9 +12,8 @@ from twilio.twiml.messaging_response import MessagingResponse
 ###########################################
 from covid_notifier.app import db, notifier_app
 from covid_notifier.models import Region, Subscriber
-from covid_notifier.helpers import send_message_twilio
 
-def user_help():
+def user_help(message):
     '''Send a help menu.'''
     response = MessagingResponse()
     help_message = '''
@@ -32,11 +31,9 @@ update:  Request an update on all regions you are subscribed to
 # Modify subscriptions
 add:  Add a region to your subscriptions
 remove:  Remove a region from your subscriptions
-Msg&Data Rates May Apply.
 '''
     response.message(help_message)
     return response
-
 
 # User configuration
 def register_user(message):
@@ -45,7 +42,7 @@ def register_user(message):
     db.session.add(subscriber)
     db.session.commit()
     response = MessagingResponse()
-    response.message("You are now registered to receive updates. Send 'commands' if you need assistance. Msg&Data Rates May Apply.")
+    response.message("You are now registered to receive updates.\nSend 'commands' if you need assistance.")
     return response
 
 def unregister_user(message):
@@ -132,9 +129,9 @@ def request_update(message):
             today = region.entries[-1]
             yesterday = region.entries[-2]
             if region.name_label == 'Montana':
-                message = [f"{region.name_label}"]
+                message = [f"{region.name_label} - {today.date}"]
             else:
-                message = [f"{region.name_label + ' County'}"]
+                message = [f"{region.name_label + ' County'} - {today.date}"]
 
             # There's probably a much better way of handling
             # DIVBYZERO errors but this is what I have right now

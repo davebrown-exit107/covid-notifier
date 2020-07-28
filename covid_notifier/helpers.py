@@ -3,10 +3,15 @@
 '''Help poor developers from having to repeat themselves...'''
 
 ##########################################
+# Stdlib imports
+###########################################
+from datetime import datetime
+
+##########################################
 # 3rd parth imports
 ###########################################
-from twilio.rest import Client
 import requests
+from twilio.rest import Client
 
 ##########################################
 # Application component imports
@@ -41,6 +46,13 @@ def send_message_pushover(message, title, auth):
         "title": f"COVID Update: {title} county"
         })
 
+def newer_data_available():
+    '''Checks to see if the data has been updated on the source site.'''
+    url = 'https://services.arcgis.com/qnjIrwR8z5Izc0ij/arcgis/rest/services/COVID_Cases_Production_View/FeatureServer/1/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=ScriptRunDate%20desc&resultOffset=0&resultRecordCount=1&resultType=standard&cacheHint=true'
+    results = requests.get(url).json()
+    current = datetime.fromtimestamp(results['features'][0]['attributes']['ScriptRunDate'] / 1000).date()
+    database = Entry.query.all()[-1].date
+    return current > database
 
 def insert_results(results, update_date):
     '''Process the json return from a query to the ArcGIS database.'''
