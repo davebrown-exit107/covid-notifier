@@ -35,17 +35,6 @@ def send_message_twilio(message, phone_number):
 
     return message
 
-
-def send_message_pushover(message, title, auth):
-    '''Send a message via Pushover.io'''
-    # Pushover message sender
-    requests.post("https://api.pushover.net/1/messages.json", data={
-        "token": auth['PUSHOVER_API_TOKEN'],
-        "user": auth['PUSHOVER_USER_KEY'],
-        "message": '\n'.join(message),
-        "title": f"COVID Update: {title} county"
-        })
-
 def newer_data_available():
     '''Checks to see if the data has been updated on the source site.'''
     url = 'https://services.arcgis.com/qnjIrwR8z5Izc0ij/arcgis/rest/services/COVID_Cases_Production_View/FeatureServer/1/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=ScriptRunDate%20desc&resultOffset=0&resultRecordCount=1&resultType=standard&cacheHint=true'
@@ -116,7 +105,6 @@ def insert_results(results, update_date):
 
     db.session.add(state_entry)
     db.session.commit()
-
 
     #######################################
     # County Statistics

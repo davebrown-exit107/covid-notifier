@@ -55,6 +55,7 @@ def user_dashboard(token=None):
             return abort(404)
         except SignatureExpired:
             return abort(404)
+
         subscriber = Subscriber.query.filter_by(phone_number=phone_number).one_or_none()
         if subscriber:
             return render_template('user_dashboard.html.j2', subscriber=subscriber)
@@ -63,7 +64,6 @@ def user_dashboard(token=None):
 #    message = sms_dispatcher['dashboard']({'From': 'PHONENUMBER'})
 #    return str(message)
     return abort(404)
-
 
 @notifier_app.route('/', methods=['GET'])
 @notifier_app.route('/state_dashboard/', methods=['GET'])
@@ -82,7 +82,6 @@ def region_dashboard(region_id):
 def pull_new_data():
     '''Pull new data from the state.'''
     if newer_data_available():
-        print('Pulling new data')
         base_url = 'https://services.arcgis.com/qnjIrwR8z5Izc0ij/ArcGIS/rest/services/COVID_Cases_Production_View/FeatureServer/0/query?'
         ret_format = 'json'
         where_query = 'Total <> 0'

@@ -38,11 +38,14 @@ remove:  Remove a region from your subscriptions
 # User configuration
 def register_user(message):
     '''Register a subscriber.'''
-    subscriber = Subscriber(phone_number=message['From'])
-    db.session.add(subscriber)
-    db.session.commit()
     response = MessagingResponse()
-    response.message("You are now registered to receive updates.\nSend 'commands' if you need assistance.")
+    if notifier_app.config['ALLOW_REGISTRATION'].lower() == 'true':
+        subscriber = Subscriber(phone_number=message['From'])
+        db.session.add(subscriber)
+        db.session.commit()
+        response.message("You are now registered to receive updates.\nSend 'commands' if you need assistance.")
+    else:
+        response.message("Sorry, registration is not open at this time.")
     return response
 
 def unregister_user(message):
