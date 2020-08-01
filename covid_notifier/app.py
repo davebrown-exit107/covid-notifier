@@ -49,3 +49,4 @@ migrate = Migrate(notifier_app, db)
 ##################################################
 #notifier_app.register_blueprint(sms_bp)
 import covid_notifier.routes
+import covid_notifier.commands
