@@ -11,6 +11,7 @@ import os
 ##########################################
 # 3rd party imports
 ###########################################
+from dotenv import load_dotenv
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -27,6 +28,7 @@ notifier_app = Flask(__name__)
 ##################################################
 # Configure Application
 ##################################################
+load_dotenv()
 envvars = {key:value for (key, value) in os.environ.items() if 'COVID_' in key}
 for key, value in envvars.items():
     notifier_app.config[key[6:]] = value

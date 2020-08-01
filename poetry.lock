@@ -15,7 +15,7 @@ python-editor = ">=0.3"
 [[package]]
 category = "dev"
 description = "Disable App Nap on OS X 10.9"
-marker = "python_version >= \"3.4\" and sys_platform == \"darwin\""
+marker = "python_version >= \"3.4\" and sys_platform == \"darwin\" or sys_platform == \"darwin\""
 name = "appnope"
 optional = false
 python-versions = "*"
@@ -38,7 +38,6 @@ test = ["astroid", "pytest"]
 [[package]]
 category = "dev"
 description = "Specifications for callback functions passed in to an API"
-marker = "python_version >= \"3.4\""
 name = "backcall"
 optional = false
 python-versions = "*"
@@ -79,7 +78,6 @@ version = "0.4.3"
 [[package]]
 category = "dev"
 description = "Decorators for Humans"
-marker = "python_version >= \"3.4\""
 name = "decorator"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*"
@@ -252,7 +250,6 @@ version = "1.1.0"
 [[package]]
 category = "dev"
 description = "An autocompletion tool for Python that can be used for text editors."
-marker = "python_version >= \"3.4\""
 name = "jedi"
 optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
@@ -317,7 +314,7 @@ testing = ["docopt", "pytest (>=3.0.7)"]
 [[package]]
 category = "dev"
 description = "Pexpect allows easy control of interactive console applications."
-marker = "python_version >= \"3.4\" and sys_platform != \"win32\""
+marker = "python_version >= \"3.4\" and sys_platform != \"win32\" or sys_platform != \"win32\""
 name = "pexpect"
 optional = false
 python-versions = "*"
@@ -329,7 +326,6 @@ ptyprocess = ">=0.5"
 [[package]]
 category = "dev"
 description = "Tiny 'shelve'-like database with concurrency support"
-marker = "python_version >= \"3.4\""
 name = "pickleshare"
 optional = false
 python-versions = "*"
@@ -338,7 +334,6 @@ version = "0.7.5"
 [[package]]
 category = "dev"
 description = "Library for building powerful interactive command lines in Python"
-marker = "python_version >= \"3.4\""
 name = "prompt-toolkit"
 optional = false
 python-versions = ">=3.6.1"
@@ -387,6 +382,17 @@ version = "2.8.1"
 
 [package.dependencies]
 six = ">=1.5"
+
+[[package]]
+category = "main"
+description = "Add .env support to your django/flask apps in development and deployments"
+name = "python-dotenv"
+optional = false
+python-versions = "*"
+version = "0.14.0"
+
+[package.extras]
+cli = ["click (>=5.0)"]
 
 [[package]]
 category = "main"
@@ -480,7 +486,6 @@ url = ["furl (>=0.4.1)"]
 [[package]]
 category = "dev"
 description = "Traitlets Python config system"
-marker = "python_version >= \"3.4\""
 name = "traitlets"
 optional = false
 python-versions = "*"
@@ -562,7 +567,8 @@ ipaddress = ["ipaddress"]
 locale = ["Babel (>=1.3)"]
 
 [metadata]
-content-hash = "e9affa113188f287882b51a1e04cbe10bce8a4e4446a0a13c01c201dac471b76"
+content-hash = "2489e1d45ab16b04202053aa90e2e31932c34f6022c918e5e71eb8e320a11ec1"
+lock-version = "1.0"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -725,6 +731,10 @@ pyjwt = [
 python-dateutil = [
     {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
     {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
+]
+python-dotenv = [
+    {file = "python-dotenv-0.14.0.tar.gz", hash = "sha256:8c10c99a1b25d9a68058a1ad6f90381a62ba68230ca93966882a4dbc3bc9c33d"},
+    {file = "python_dotenv-0.14.0-py2.py3-none-any.whl", hash = "sha256:c10863aee750ad720f4f43436565e4c1698798d763b63234fb5021b6c616e423"},
 ]
 python-editor = [
     {file = "python-editor-1.0.4.tar.gz", hash = "sha256:51fda6bcc5ddbbb7063b2af7509e43bd84bfc32a4ff71349ec7847713882327b"},

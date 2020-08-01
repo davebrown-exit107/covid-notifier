@@ -6,15 +6,12 @@ This application pulls down the most recent COVID-19 results from the state and 
 	* `git clone https://github.com/exit107/covid-notifier.git`
 2. Change into the repo directory
 	* `cd covid-notifier`
-3. Create an environment file with the API keys for the messaging service of your choice.
+3. Create an environment file based on the `env.example` file. _Note: we're using [python-dotenv](https://github.com/theskumar/python-dotenv#readme) to source the variables so make sure to save your env file in the same directory as this README as `.env`_
 	* _Refer to `env.example` for syntax._
-4. Source your environment variables 
-	* `source YOUR_ENVIRONMENT_FILE_HERE`.
-5. Start the server
+4. Start the server
     * `flask run`
-6. Connect to pull data for the first time
+5. Connect to pull data for the first time
     * `curl http://localhost:5000/pull_new_data/`
-7. Profit?
 
 ## Anything else?
 This is very much a work in progress and nothing is sacred until we reach 1.0.
