@@ -10,6 +10,7 @@ from urllib.parse import quote
 # 3rd party imports
 ###########################################
 import click
+import requests
 from twilio.rest import Client
 
 ##########################################
