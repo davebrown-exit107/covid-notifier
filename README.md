@@ -8,6 +8,11 @@ This application pulls down the most recent COVID-19 results from the state and 
 	* `cd covid-notifier`
 3. Create an environment file based on the `env.example` file. _Note: we're using [python-dotenv](https://github.com/theskumar/python-dotenv#readme) to source the variables so make sure to save your env file in the same directory as this README as `.env`_
 	* _Refer to `env.example` for syntax._
+4. Install requirements and activate your environment.
+    * _Poetry was used to generate requirements, but is by no means required._
+    * `poetry install && poetry shell`
+4. Setup the database
+    * `flask db upgrade`
 4. Pull down new data
     * `flask pull-updates`
 5. Start the server
