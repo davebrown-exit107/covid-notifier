@@ -40,6 +40,9 @@ def newer_data_available():
     url = 'https://services.arcgis.com/qnjIrwR8z5Izc0ij/arcgis/rest/services/COVID_Cases_Production_View/FeatureServer/1/query?f=json&where=1%3D1&returnGeometry=false&spatialRel=esriSpatialRelIntersects&outFields=*&orderByFields=ScriptRunDate%20desc&resultOffset=0&resultRecordCount=1&resultType=standard&cacheHint=true'
     results = requests.get(url).json()
     current = datetime.fromtimestamp(results['features'][0]['attributes']['ScriptRunDate'] / 1000).date()
+    if Entry.query.count() == 0:
+        # No data means newer data is available
+        return True
     database = Entry.query.all()[-1].date
     return current > database
 
