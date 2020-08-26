@@ -37,6 +37,11 @@ for key, value in envvars.items():
 # SQLAlchemy setup
 ##################################################
 db = SQLAlchemy(notifier_app)
+
+if not database_exists(db.engine.url):
+    print('Creating database.')
+    create_database(db.engine.url)
+
 db.create_all()
 
 ##################################################
@@ -50,3 +55,6 @@ migrate = Migrate(notifier_app, db)
 #notifier_app.register_blueprint(sms_bp)
 import covid_notifier.routes
 import covid_notifier.commands
+
+if __name__ == '__main__':
+    notifier_app.run()

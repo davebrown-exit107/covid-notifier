@@ -1,0 +1,38 @@
+version: '3.1'
+services:
+    caddy:
+        # image: exit107/covid_caddy
+        build: ./caddy
+        depends_on:
+            - frontend
+        restart: always
+        ports: 
+            - 80:80
+            - 443:443
+        volumes:
+            - caddy-data:/data
+            - caddy-config:/config
+    db:
+        # image: exit107/covid_db
+        build: ./db
+        restart: always
+        env_file:
+            - ./env/db.env
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        expose:
+            - 5432
+    frontend:
+        depends_on:
+            - db
+        # image: exit107/covid_frontend
+        build: ./frontend
+        restart: always
+        env_file:
+            - ./env/frontend.env
+        expose:
+            - 5000
+volumes:
+    db-data:
+    caddy-data:
+    caddy-config:

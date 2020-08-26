@@ -120,5 +120,7 @@ def pull_new_data():
         insert_results(results, current)
 
         click.echo(f'Results for {current} added to the database.')
+        return True
     else:
         click.echo('No newer data found online')
+        return False
