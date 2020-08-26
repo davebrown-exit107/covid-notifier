@@ -17,4 +17,4 @@ This application pulls down the most recent COVID-19 results from the state (Mon
 6. Explore the data!
 
 ## How to contribute:
-I'd suggest starting off by first glancing over [Code of Conduct](Contribute.md). After that, hop over to [How to Contribute](how_to_contribute.md) for instructions on how to quickly setup a development environment.
+I'd suggest starting off by first glancing over the [Code of Conduct](CONTRIBUTING.md). After that, hop over to [How to Contribute](how_to_contribute.md) for instructions on how to quickly setup a development environment.
