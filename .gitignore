@@ -3,3 +3,4 @@ __pycache__
 *.sqlite
 sample_data
 db_backups
+Caddyfile

@@ -16,7 +16,7 @@ from twilio.rest import Client
 ##########################################
 # Application component imports
 ###########################################
-from covid_notifier.models import Region, Entry
+from covid_notifier.models import Region, Entry, Subscriber
 from covid_notifier.app import db, notifier_app
 
 def send_message_twilio(message, phone_number):
@@ -171,3 +171,58 @@ def insert_results(results, update_date):
         # Add it to the session and commit
         db.session.add(db_entry)
         db.session.commit()
+
+def send_update(subscriber_id):
+    '''Update all subscribers for all of their subscribed regions.'''
+    # Build the Twilio client
+    client = Client(notifier_app.config['TWILIO_ACCOUNT_SID'], notifier_app.config['TWILIO_AUTH_TOKEN'])
+    subscriber = Subscriber.query.get(subscriber_id)
+    if subscriber and len(subscriber.regions) > 0:
+        for region in subscriber.regions:
+            today = region.entries[-1]
+            yesterday = region.entries[-2]
+            if region.name_label == 'Montana':
+                message = [f"{region.name_label} - {today.date}"]
+            else:
+                message = [f"{region.name_label + ' County'} - {today.date}"]
+
+            # There's probably a much better way of handling
+            # DIVBYZERO errors but this is what I have right now
+            if today.new_case == 0 or yesterday.new_case == 0:
+                message.append(f"New Cases: {today.new_case: >15} (N/A)")
+            else:
+                message.append(f"New Cases: {today.new_case: >15} ({((today.new_case / yesterday.new_case) - 1):+3.0%})")
+
+            if today.total_active == 0 or yesterday.total_active == 0:
+                message.append(f"Total Active: {today.total_active: >12} (N/A)")
+            else:
+                message.append(f"Total Active: {today.total_active: >12} ({((today.total_active / yesterday.total_active) - 1):+3.0%})")
+
+            if today.hospitalization_count == 0 or yesterday.hospitalization_count == 0:
+                message.append(f"Hospitalized: {today.hospitalization_count: >12} (N/A)")
+            else:
+                message.append(f"Hospitalized: {today.hospitalization_count: >12} ({((today.hospitalization_count / yesterday.hospitalization_count) - 1):+3.0%})")
+
+            if today.total == 0 or yesterday.total == 0:
+                message.append(f"Total Cases: {today.total: >13} (N/A)")
+            else:
+                message.append(f"Total Cases: {today.total: >13} ({((today.total / yesterday.total) - 1):+3.0%})")
+
+            if today.total_recovered == 0 or yesterday.total_recovered == 0:
+                message.append(f"Total Recovered: {today.total_recovered: >9} (N/A)")
+            else:
+                message.append(f"Total Recovered: {today.total_recovered: >9} ({((today.total_recovered / yesterday.total_recovered) - 1):+3.0%})")
+
+            if today.total_deaths == 0 or yesterday.total_deaths == 0:
+                message.append(f"Total Deaths: {today.total_deaths: >12} (N/A)")
+            else:
+                message.append(f"Total Deaths: {today.total_deaths: >12} ({((today.total_deaths / yesterday.total_deaths) - 1):+3.0%})")
+
+            client.messages.create(
+                body='\n'.join(message),
+                messaging_service_sid=notifier_app.config['TWILIO_MESSAGING_SERVICE'],
+                to=subscriber.phone_number
+                )
+            return True
+        else:
+            return False
