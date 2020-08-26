@@ -15,3 +15,6 @@ This application pulls down the most recent COVID-19 results from the state (Mon
 5. Pull down new data
     * Open a web browser and navigate to `https://<SERVER_IP_OR_HOSTNAME>/pull_updates/`
 6. Explore the data!
+
+## How to contribute:
+I'd suggest starting off by first glancing over [Code of Conduct](Contribute.md). After that, hop over to [How to Contribute](how_to_contribute.md) for instructions on how to quickly setup a development environment.
