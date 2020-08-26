@@ -11,8 +11,10 @@
     * `docker build --name db ./db && docker run -d -p 5432:5432 db`
 6. Build the environment file
     * `sed 's/^/export /g' ./env/frontend.env.example > ./env_file`
-    * `source ./env_file``
-7. Start the development server
+    * `source ./env_file`
+7. Initialize the database
+    * `flask db upgrade`
+Start the development server
     * `flask run`
 8. Hack away!!!
 
