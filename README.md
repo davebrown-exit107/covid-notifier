@@ -12,8 +12,9 @@ This application pulls down the most recent COVID-19 results from the state (Mon
     * `cp caddy/Caddyfile.example caddy/Caddyfile`
 4. Start the cluster
     * `docker-compose up`
-5. Pull down new data
-    * Open a web browser and navigate to `https://<SERVER_IP_OR_HOSTNAME>/pull_updates/`
+5. Pull down new data (there are two ways)
+    * Open a web browser and navigate to `https://localhost/pull_updates/`
+    * `docker-compose run --rm --no-deps --entrypoint 'poetry run flask pull-updates' frontend`
 6. Explore the data!
 
 ## How to contribute:

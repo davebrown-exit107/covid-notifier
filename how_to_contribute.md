@@ -13,7 +13,7 @@
     * `sed 's/^/export /g' ./env/frontend.env.example > ./env_file`
     * `source ./env_file`
 7. Initialize the database
-    * `flask db upgrade`
+    * `flask db upgrade && flask pull-updates`
 Start the development server
     * `flask run`
 8. Hack away!!!
